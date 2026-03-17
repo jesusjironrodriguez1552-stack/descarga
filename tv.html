@@ -157,8 +157,6 @@ body {
 .error-box.show { display: block; }
 
 /* ── HOME ── */
-#home { display: none; }
-#home.active { display: block; }
 .navbar {
   position: sticky;
   top: 0;
@@ -323,8 +321,7 @@ body {
 }
 
 /* ── DETAIL ── */
-#detail { display: none; background: var(--dark); }
-#detail.active { display: block; }
+#detail { background: var(--dark); }
 .detail-header {
   position: relative; height: 60vh; min-height: 350px; overflow: hidden;
 }
@@ -622,6 +619,7 @@ async function doLogin() {
   btn.disabled = true;
   btn.textContent = 'Verificando...';
   errBox.classList.remove('show');
+  console.log('🔐 doLogin iniciado, modo:', loginMode);
 
   try {
     let data;
@@ -630,23 +628,27 @@ async function doLogin() {
       const correo = document.getElementById('inp-email').value.trim();
       const pass   = document.getElementById('inp-pass').value.trim();
       if (!correo || !pass) throw new Error('Completa todos los campos.');
+      console.log('📧 Buscando por email:', correo);
       data = await sbGet('usuarios',
         `?correo=eq.${encodeURIComponent(correo)}&contrasena=eq.${encodeURIComponent(pass)}`
       );
     } else {
       const code = document.getElementById('inp-code').value.trim().toUpperCase();
       if (!code) throw new Error('Ingresa el código de acceso.');
+      console.log('🔑 Buscando por código:', code);
       data = await sbGet('usuarios',
         `?codigo_acceso=eq.${encodeURIComponent(code)}`
       );
     }
 
-    // ── Validaciones ──────────────────────────────────────────
+    console.log('📦 Respuesta Supabase:', data);
+
     if (!Array.isArray(data) || data.length === 0 || !data[0]) {
       throw new Error('Credenciales incorrectas.');
     }
 
     const u = data[0];
+    console.log('👤 Usuario encontrado:', u);
 
     if (u.activo === false || u.activo === 'false') {
       throw new Error('Tu cuenta está desactivada.');
@@ -654,24 +656,7 @@ async function doLogin() {
 
     if (u.fecha_expiracion) {
       const exp = new Date(u.fecha_expiracion);
-      if (isNaN(exp.getTime())) throw new Error('Fecha de expiración inválida.');
-      if (new Date() > exp) throw new Error('Tu membresía ha caducado. Renueva tu plan.');
-    }
-
-    // ── Éxito ─────────────────────────────────────────────────
-    usuario = u;
-    localStorage.setItem('netflix_session', JSON.stringify(u));
-    showScreen('home');
-    loadHome();
-
-  } catch (e) {
-    errBox.textContent = e.message;
-    errBox.classList.add('show');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Iniciar sesión';
-  }
-}
+      console.log('📅 Expiración:', exp, '|
 
 function doLogout() {
   localStorage.removeItem('netflix_session');
