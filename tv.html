@@ -2,130 +2,159 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=1280">
 <title>NETFLIX</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --red: #E50914;
   --dark: #0A0A0A;
-  --card: #141414;
-  --card2: #1a1a1a;
-  --text: #ffffff;
   --muted: #808080;
-  --border: rgba(255,255,255,0.1);
 }
-body { background: #0a0a0a; color: #ffffff; font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; } #home { background: #0a0a0a; } .content-rows { background: #0a0a0a; }
+body { background: #0a0a0a; color: #ffffff; font-family: Arial, sans-serif; min-height: 100vh; overflow-x: hidden; font-size: 16px; }
+
+/* SCREENS */
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: block; }
-#splash { background: black; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-.splash-logo { font-size: clamp(4rem,12vw,8rem); font-weight: 900; color: var(--red); letter-spacing: 0.1em; animation: splashIn 1s ease both; text-shadow: 0 0 60px rgba(229,9,20,0.5); }
-.splash-line { height: 3px; background: linear-gradient(to right, var(--red), transparent); width: 0; animation: lineExpand 0.8s 0.8s ease forwards; }
-@keyframes splashIn { from { transform: scale(3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@keyframes lineExpand { to { width: 200px; } }
-#login { background: #0a0a0a; display: flex; align-items: center; justify-content: center; padding: 2rem; min-height: 100vh; }
-.login-box { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: clamp(2rem,5vw,3.5rem); width: 100%; max-width: 450px; animation: fadeUp 0.5s ease; }
-.login-app-name { color: var(--red); font-size: clamp(1.8rem,4vw,2.2rem); font-weight: 900; letter-spacing: 0.1em; margin-bottom: 1.5rem; }
-.field-group { margin-bottom: 1rem; }
-.field-group label { display: block; color: var(--muted); font-size: 0.8rem; margin-bottom: 0.4rem; }
-.field-group input { width: 100%; background: #333; border: none; border-radius: 4px; padding: 1rem; color: white; font-size: 1rem; font-family: inherit; outline: none; transition: box-shadow 0.2s; }
-.field-group input:focus { box-shadow: 0 0 0 2px rgba(255,255,255,0.3); }
-.code-input { text-align: center; font-size: 1.5rem !important; letter-spacing: 0.3em; font-weight: 700 !important; }
-.btn-primary { width: 100%; background: var(--red); color: white; border: none; border-radius: 4px; padding: 1rem; font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer; margin-top: 1rem; transition: background 0.2s, transform 0.1s; }
+
+/* SPLASH */
+#splash { background: #000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+.splash-logo { font-size: 80px; font-weight: 900; color: #E50914; letter-spacing: 8px; }
+
+/* LOGIN */
+#login { background: #0a0a0a; display: flex; align-items: center; justify-content: center; padding: 40px; min-height: 100vh; }
+.login-box { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 48px; width: 100%; max-width: 480px; }
+.login-app-name { color: #E50914; font-size: 32px; font-weight: 900; letter-spacing: 4px; margin-bottom: 24px; }
+.login-tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+.login-tab { padding: 10px 20px; font-size: 16px; color: rgba(255,255,255,0.5); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; background: none; border-top: none; border-left: none; border-right: none; color: rgba(255,255,255,0.5); font-family: Arial, sans-serif; }
+.login-tab.active { color: #ffffff; border-bottom-color: #E50914; }
+.field-group { margin-bottom: 16px; }
+.field-group label { display: block; color: #808080; font-size: 13px; margin-bottom: 6px; }
+.field-group input { width: 100%; background: #333; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 14px 16px; color: #ffffff; font-size: 16px; font-family: Arial, sans-serif; outline: none; }
+.field-group input:focus { border-color: rgba(255,255,255,0.4); }
+.code-input { text-align: center; font-size: 24px; letter-spacing: 8px; font-weight: 700; }
+.btn-primary { width: 100%; background: #E50914; color: #ffffff; border: none; border-radius: 4px; padding: 16px; font-size: 16px; font-weight: 700; font-family: Arial, sans-serif; cursor: pointer; margin-top: 16px; }
 .btn-primary:hover { background: #f40612; }
-.btn-primary:active { transform: scale(0.98); }
 .btn-primary:disabled { background: #831010; cursor: not-allowed; }
-.login-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
-.login-tab { padding: 0.5rem 1rem; font-size: 1rem; color: rgba(255,255,255,0.6); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; border-radius: 4px 4px 0 0; }
-.login-tab.active { color: white; border-bottom-color: var(--red); }
-.error-box { background: #2B0A0A; border: 1px solid rgba(229,9,20,0.5); border-radius: 4px; padding: 0.75rem 1rem; color: white; font-size: 0.875rem; margin-bottom: 1rem; display: none; }
+.error-box { background: #2B0A0A; border: 1px solid rgba(229,9,20,0.5); border-radius: 4px; padding: 12px 16px; color: #ffffff; font-size: 14px; margin-bottom: 16px; display: none; }
 .error-box.show { display: block; }
-.navbar { position: sticky; top: 0; z-index: 100; background: rgba(0,0,0,0.95); padding: 0.5rem 2%; display: flex; align-items: center; gap: 1rem; }
-.nav-logo { color: var(--red); font-size: 1.8rem; font-weight: 900; letter-spacing: 0.1em; flex-shrink: 0; }
-.nav-links { display: flex; gap: 1.5rem; list-style: none; flex: 1; }
-.nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; cursor: pointer; transition: color 0.2s; }
-.nav-links a:hover, .nav-links a.active { color: white; }
-.nav-right { display: flex; align-items: center; gap: 1rem; margin-left: auto; }
-.nav-user { font-size: 0.85rem; color: var(--muted); }
-.btn-logout { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-family: inherit; transition: color 0.2s, border-color 0.2s; }
-.btn-logout:hover { color: white; border-color: white; }
-.search-bar { padding: 0.4rem 1rem; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: 4px; color: white; font-family: inherit; font-size: 0.85rem; outline: none; width: 200px; transition: width 0.3s, background 0.2s; }
-.search-bar:focus { width: 280px; background: rgba(255,255,255,0.15); }
-.search-bar::placeholder { color: var(--muted); }
-.hero-banner { position: relative; height: 30vh; min-height: 180px; margin-top: -60px; overflow: hidden; }
-.hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center top; }
-.hero-overlay { position: absolute; inset: 0; background: linear-gradient(0deg,var(--dark) 0%,rgba(10,10,10,0.5) 50%,transparent 100%), linear-gradient(90deg,rgba(10,10,10,0.8) 0%,transparent 60%); }
-.hero-content { position: absolute; bottom: 15%; left: 4%; max-width: 40%; }
-.hero-title { font-size: clamp(1rem,2vw,1.5rem); font-weight: 900; margin-bottom: 0.5rem; line-height: 1.1; }
-.hero-genre { display: inline-block; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
-.hero-sinopsis { font-size: clamp(0.7rem,1vw,0.8rem); color: rgba(255,255,255,0.75); line-height: 1.4; margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.hero-buttons { display: flex; gap: 1rem; }
-.btn-play { display: flex; align-items: center; gap: 0.5rem; background: white; color: black; border: none; border-radius: 4px; padding: 0.6rem 1.5rem; font-weight: 700; font-size: clamp(0.8rem,1.2vw,1rem); cursor: pointer; font-family: inherit; transition: background 0.2s; }
+
+/* NAVBAR */
+.navbar { background: rgba(0,0,0,0.98); padding: 12px 64px; display: flex; align-items: center; gap: 32px; position: sticky; top: 0; z-index: 100; }
+.nav-logo { color: #E50914; font-size: 28px; font-weight: 900; letter-spacing: 4px; flex-shrink: 0; }
+.nav-links { display: flex; gap: 24px; list-style: none; flex: 1; }
+.nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 15px; cursor: pointer; }
+.nav-links a:hover, .nav-links a.active { color: #ffffff; }
+.nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+.nav-user { font-size: 13px; color: #808080; }
+.btn-logout { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #808080; padding: 6px 14px; border-radius: 4px; font-size: 13px; cursor: pointer; font-family: Arial, sans-serif; }
+.btn-logout:hover { color: #ffffff; border-color: #ffffff; }
+.search-bar { padding: 6px 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; color: #ffffff; font-family: Arial, sans-serif; font-size: 14px; outline: none; width: 200px; }
+.search-bar::placeholder { color: #808080; }
+
+/* HERO */
+.hero-banner { position: relative; height: 280px; overflow: hidden; }
+.hero-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center top; }
+.hero-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(0deg, #0a0a0a 0%, rgba(10,10,10,0.5) 50%, transparent 100%); }
+.hero-overlay2 { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(10,10,10,0.85) 0%, transparent 60%); }
+.hero-content { position: absolute; bottom: 24px; left: 64px; max-width: 500px; }
+.hero-genre { display: inline-block; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 3px 12px; font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+.hero-title { font-size: 28px; font-weight: 900; margin-bottom: 8px; line-height: 1.1; }
+.hero-sinopsis { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.5; margin-bottom: 12px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.hero-buttons { display: flex; gap: 12px; }
+.btn-play { display: flex; align-items: center; gap: 8px; background: #ffffff; color: #000000; border: none; border-radius: 4px; padding: 10px 24px; font-weight: 700; font-size: 15px; cursor: pointer; font-family: Arial, sans-serif; }
 .btn-play:hover { background: rgba(255,255,255,0.85); }
-.btn-info { display: flex; align-items: center; gap: 0.5rem; background: rgba(109,109,110,0.7); color: white; border: none; border-radius: 4px; padding: 0.6rem 1.5rem; font-weight: 700; font-size: clamp(0.8rem,1.2vw,1rem); cursor: pointer; font-family: inherit; transition: background 0.2s; }
+.btn-info { display: flex; align-items: center; gap: 8px; background: rgba(109,109,110,0.7); color: #ffffff; border: none; border-radius: 4px; padding: 10px 24px; font-weight: 700; font-size: 15px; cursor: pointer; font-family: Arial, sans-serif; }
 .btn-info:hover { background: rgba(109,109,110,0.5); }
-.content-rows { padding: 0 2% 2rem; }
-.row-section { margin-bottom: 1.5rem; }
-.row-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
-.cards-scroll { display: grid; grid-template-columns: repeat(8, 1fr) !important; gap: 6px; width: 100%; }
-.cards-scroll::-webkit-scrollbar { display: none; }
-.card { cursor: pointer; transition: transform 0.3s; position: relative; }
-.card:hover { transform: scale(1.08); z-index: 10; }
-.card-img { width: 100%; height: 120px; object-fit: cover; border-radius: 4px; background: var(--card2); } 
-.card-title { font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cards-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(clamp(120px,15vw,180px),1fr)); gap: 0.75rem; }
-#detail { background: var(--dark); }
-.detail-header { position: relative; height: 60vh; min-height: 350px; overflow: hidden; }
-.detail-bg { position: absolute; inset: 0; background-size: cover; background-position: center top; }
-.detail-overlay { position: absolute; inset: 0; background: linear-gradient(0deg,var(--dark) 0%,rgba(10,10,10,0.4) 60%,transparent 100%); }
-.detail-back { position: absolute; top: 1rem; left: 1rem; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; width: 40px; height: 40px; color: white; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 10; }
-.detail-back:hover { background: rgba(0,0,0,0.8); }
-.detail-content { padding: 0 4% 4rem; margin-top: -4rem; position: relative; }
-.detail-title { font-size: clamp(1.5rem,4vw,2.5rem); font-weight: 900; margin-bottom: 0.75rem; }
-.detail-meta { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
-.detail-genre { border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; color: rgba(255,255,255,0.6); }
-.detail-buttons { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
-.detail-sinopsis { font-size: 0.95rem; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 700px; margin-bottom: 2rem; }
-.episodes-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; }
-.episode-item { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; border-radius: 4px; }
-.episode-item:hover { background: rgba(255,255,255,0.05); }
-.episode-badge { background: var(--card2); border-radius: 4px; padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 700; color: var(--red); flex-shrink: 0; min-width: 60px; text-align: center; }
-.episode-info { flex: 1; }
-.episode-title { font-size: 0.9rem; font-weight: 600; }
-.episode-sinopsis { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.episode-play { color: var(--red); font-size: 1.5rem; flex-shrink: 0; }
-#player { display: none; background: black; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
-#player.active { display: flex; }
-#player iframe, #player video { width: 100%; height: 100%; border: none; position: absolute; inset: 0; object-fit: contain; }
-.player-back { position: absolute; top: 1rem; left: 1rem; z-index: 10; background: rgba(0,0,0,0.6); border: none; border-radius: 50%; width: 44px; height: 44px; color: white; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-.player-back:hover { background: rgba(0,0,0,0.9); }
-.player-loading { display: flex; flex-direction: column; align-items: center; gap: 1rem; z-index: 5; }
-.player-loading-title { font-size: 1.1rem; font-weight: 700; }
-.spinner { width: 48px; height: 48px; border: 4px solid rgba(229,9,20,0.3); border-top-color: var(--red); border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.player-source { position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; color: rgba(255,255,255,0.5); z-index: 10; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 600px) {
-  .hero-content { max-width: 90%; }
-  .cards-scroll { grid-template-columns: repeat(8, 1fr) !important; }
-  .card-img { height: 80px !important; }
+
+/* CONTENT */
+.content-rows { padding: 16px 64px 48px; background: #0a0a0a; }
+.row-section { margin-bottom: 24px; }
+.row-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #ffffff; }
+
+/* CARDS GRID - TV optimized */
+.cards-grid-tv {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: -6px;
+  margin-right: -6px;
 }
+.card-tv {
+  width: 16.666%;
+  padding: 0 6px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.card-tv img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  background: #1a1a1a;
+}
+.card-tv-title {
+  font-size: 12px;
+  color: #808080;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: Arial, sans-serif;
+}
+
+/* DETAIL */
+#detail { background: #0a0a0a; }
+.detail-header { position: relative; height: 320px; overflow: hidden; }
+.detail-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center top; }
+.detail-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(0deg, #0a0a0a 0%, rgba(10,10,10,0.4) 60%, transparent 100%); }
+.detail-back { position: absolute; top: 16px; left: 16px; background: rgba(0,0,0,0.6); border: none; border-radius: 50%; width: 44px; height: 44px; color: #ffffff; font-size: 20px; cursor: pointer; z-index: 10; font-family: Arial, sans-serif; }
+.detail-content { padding: 0 64px 48px; margin-top: -32px; position: relative; }
+.detail-title { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
+.detail-genre { border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 13px; color: rgba(255,255,255,0.6); display: inline-block; margin-bottom: 16px; }
+.detail-buttons { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.detail-sinopsis { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.7; max-width: 700px; margin-bottom: 24px; }
+.episodes-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+.episode-item { display: flex; align-items: center; gap: 16px; padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; border-radius: 4px; }
+.episode-item:hover { background: rgba(255,255,255,0.05); }
+.episode-badge { background: #1a1a1a; border-radius: 4px; padding: 8px 12px; font-size: 12px; font-weight: 700; color: #E50914; flex-shrink: 0; min-width: 64px; text-align: center; }
+.episode-info { flex: 1; }
+.episode-title { font-size: 14px; font-weight: 600; }
+.episode-sinopsis { font-size: 12px; color: #808080; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.episode-play { color: #E50914; font-size: 24px; flex-shrink: 0; }
+
+/* PLAYER */
+#player { display: none; background: #000; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
+#player.active { display: flex; }
+.player-back { position: absolute; top: 16px; left: 16px; z-index: 10; background: rgba(0,0,0,0.6); border: none; border-radius: 50%; width: 48px; height: 48px; color: #ffffff; font-size: 22px; cursor: pointer; font-family: Arial, sans-serif; display: flex; align-items: center; justify-content: center; }
+.player-loading { display: flex; flex-direction: column; align-items: center; gap: 16px; z-index: 5; }
+.player-loading-title { font-size: 18px; font-weight: 700; }
+.spinner { width: 48px; height: 48px; border: 4px solid rgba(229,9,20,0.3); border-top-color: #E50914; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.player-source { position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 12px; font-size: 12px; color: rgba(255,255,255,0.5); z-index: 10; }
+#player-content { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none; }
+#player-content iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
 </style>
 </head>
 <body>
 
+<!-- SPLASH -->
 <div id="splash" class="screen active">
   <div class="splash-logo">NETFLIX</div>
-  <div class="splash-line" style="margin-top:8px"></div>
 </div>
 
+<!-- LOGIN -->
 <div id="login" class="screen">
   <div class="login-box">
     <div class="login-app-name">NETFLIX</div>
     <div class="login-tabs">
-      <div class="login-tab active" id="tab-btn-email">Correo</div>
-      <div class="login-tab" id="tab-btn-code">Codigo</div>
+      <button class="login-tab active" id="tab-btn-email">Correo</button>
+      <button class="login-tab" id="tab-btn-code">Codigo</button>
     </div>
     <div id="tab-email">
       <div class="field-group">
@@ -145,10 +174,11 @@ body { background: #0a0a0a; color: #ffffff; font-family: 'Inter', sans-serif; mi
     </div>
     <div class="error-box" id="login-error"></div>
     <button class="btn-primary" id="btn-login">Iniciar sesion</button>
-    <p style="margin-top:1.5rem;font-size:0.8rem;color:var(--muted)">Esta pagina esta protegida y los datos son encriptados.</p>
+    <p style="margin-top:16px;font-size:12px;color:#808080">Esta pagina esta protegida y los datos son encriptados.</p>
   </div>
 </div>
 
+<!-- HOME -->
 <div id="home" class="screen">
   <nav class="navbar">
     <div class="nav-logo">NETFLIX</div>
@@ -167,13 +197,14 @@ body { background: #0a0a0a; color: #ffffff; font-family: 'Inter', sans-serif; mi
     <div class="hero-banner">
       <div class="hero-bg" id="hero-bg"></div>
       <div class="hero-overlay"></div>
+      <div class="hero-overlay2"></div>
       <div class="hero-content">
         <div class="hero-genre" id="hero-genre"></div>
         <div class="hero-title" id="hero-title">Cargando...</div>
         <div class="hero-sinopsis" id="hero-sinopsis"></div>
         <div class="hero-buttons">
-          <button class="btn-play" id="btn-hero-play">Reproducir</button>
-          <button class="btn-info" id="btn-hero-info">Mas info</button>
+          <button class="btn-play" id="btn-hero-play">&#9654; Reproducir</button>
+          <button class="btn-info" id="btn-hero-info">i Mas info</button>
         </div>
       </div>
     </div>
@@ -181,6 +212,7 @@ body { background: #0a0a0a; color: #ffffff; font-family: 'Inter', sans-serif; mi
   <div class="content-rows" id="content-rows"></div>
 </div>
 
+<!-- DETAIL -->
 <div id="detail" class="screen">
   <div class="detail-header">
     <div class="detail-bg" id="detail-bg"></div>
@@ -189,22 +221,23 @@ body { background: #0a0a0a; color: #ffffff; font-family: 'Inter', sans-serif; mi
   </div>
   <div class="detail-content">
     <div class="detail-title" id="detail-title"></div>
-    <div class="detail-meta"><span class="detail-genre" id="detail-genre"></span></div>
+    <div><span class="detail-genre" id="detail-genre"></span></div>
     <div class="detail-buttons" id="detail-buttons"></div>
     <div class="detail-sinopsis" id="detail-sinopsis"></div>
     <div id="episodes-section"></div>
   </div>
 </div>
 
+<!-- PLAYER -->
 <div id="player" class="screen">
   <button class="player-back" id="btn-player-back">&#8592;</button>
   <div class="player-source" id="player-source"></div>
   <div class="player-loading" id="player-loading">
     <div class="spinner"></div>
     <div class="player-loading-title" id="player-loading-title">Cargando...</div>
-    <div style="font-size:0.8rem;color:var(--muted)">Preparando reproduccion...</div>
+    <div style="font-size:13px;color:#808080">Preparando reproduccion...</div>
   </div>
-  <div id="player-content" style="position:absolute;inset:0;display:none"></div>
+  <div id="player-content"></div>
 </div>
 
 <script>
@@ -223,35 +256,32 @@ var loginMode = 'email';
 function sbGet(table, query) {
   query = query || '';
   var url = SUPABASE_URL + '/rest/v1/' + table + query;
-  var timeout = new Promise(function(_, reject) {
-    setTimeout(function() { reject(new Error('Timeout - sin respuesta del servidor')); }, 10000);
-  });
-  var request = new Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.setRequestHeader('apikey', SUPABASE_KEY);
     xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_KEY);
+    xhr.timeout = 15000;
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
         try { resolve(JSON.parse(xhr.responseText)); }
         catch(e) { reject(new Error('Error parseando respuesta')); }
       } else {
-        reject(new Error('Error ' + xhr.status + ': ' + xhr.responseText));
+        reject(new Error('Error ' + xhr.status));
       }
     };
     xhr.onerror = function() { reject(new Error('Error de red')); };
-    xhr.ontimeout = function() { reject(new Error('Timeout')); };
-    xhr.timeout = 10000;
+    xhr.ontimeout = function() { reject(new Error('Timeout - verifica tu conexion')); };
     xhr.send();
   });
-  return Promise.race([request, timeout]);
 }
 
 function showScreen(id) {
-  var screens = document.querySelectorAll('.screen');
-  for (var i = 0; i < screens.length; i++) {
-    screens[i].classList.remove('active');
-    screens[i].style.display = 'none';
+  var all = ['splash','login','home','detail','player'];
+  for (var i = 0; i < all.length; i++) {
+    var el = document.getElementById(all[i]);
+    el.classList.remove('active');
+    el.style.display = 'none';
   }
   var target = document.getElementById(id);
   target.classList.add('active');
@@ -263,172 +293,138 @@ function goBack() {
   showScreen(prev || 'home');
 }
 
-document.getElementById('tab-btn-email').addEventListener('click', function() {
+// LOGIN TABS
+document.getElementById('tab-btn-email').onclick = function() {
   loginMode = 'email';
   document.getElementById('tab-btn-email').classList.add('active');
   document.getElementById('tab-btn-code').classList.remove('active');
   document.getElementById('tab-email').style.display = 'block';
   document.getElementById('tab-code').style.display = 'none';
-});
-
-document.getElementById('tab-btn-code').addEventListener('click', function() {
+};
+document.getElementById('tab-btn-code').onclick = function() {
   loginMode = 'code';
   document.getElementById('tab-btn-code').classList.add('active');
   document.getElementById('tab-btn-email').classList.remove('active');
   document.getElementById('tab-code').style.display = 'block';
   document.getElementById('tab-email').style.display = 'none';
-});
+};
 
-document.getElementById('btn-login').addEventListener('click', doLogin);
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && document.getElementById('login').classList.contains('active')) {
-    doLogin();
-  }
-});
+document.getElementById('btn-login').onclick = doLogin;
+document.onkeydown = function(e) {
+  if (e.keyCode === 13 && document.getElementById('login').style.display !== 'none') doLogin();
+};
 
 function doLogin() {
   var btn = document.getElementById('btn-login');
   var errBox = document.getElementById('login-error');
   btn.disabled = true;
   btn.textContent = 'Verificando...';
-  errBox.classList.remove('show');
+  errBox.className = 'error-box';
 
   var promise;
   if (loginMode === 'email') {
-    var correo = document.getElementById('inp-email').value.trim();
-    var pass = document.getElementById('inp-pass').value.trim();
-    if (!correo || !pass) {
-      showError('Completa todos los campos.');
-      return;
-    }
+    var correo = document.getElementById('inp-email').value;
+    var pass = document.getElementById('inp-pass').value;
+    correo = correo.replace(/^\s+|\s+$/g, '');
+    pass = pass.replace(/^\s+|\s+$/g, '');
+    if (!correo || !pass) { showErr('Completa todos los campos.'); return; }
     promise = sbGet('usuarios', '?correo=eq.' + encodeURIComponent(correo) + '&contrasena=eq.' + encodeURIComponent(pass));
   } else {
-    var code = document.getElementById('inp-code').value.trim().toUpperCase();
-    if (!code) {
-      showError('Ingresa el codigo de acceso.');
-      return;
-    }
+    var code = document.getElementById('inp-code').value;
+    code = code.replace(/^\s+|\s+$/g, '').toUpperCase();
+    if (!code) { showErr('Ingresa el codigo de acceso.'); return; }
     promise = sbGet('usuarios', '?codigo_acceso=eq.' + encodeURIComponent(code));
   }
 
   promise.then(function(data) {
     btn.disabled = false;
     btn.textContent = 'Iniciar sesion';
-    if (!data || !Array.isArray(data) || data.length === 0 || !data[0]) {
-      showError('Credenciales incorrectas.');
-      return;
-    }
+    if (!data || !Array.isArray(data) || data.length === 0) { showErr('Credenciales incorrectas.'); return; }
     var u = data[0];
-    if (u.activo === false) { showError('Tu cuenta esta desactivada.'); return; }
+    if (!u) { showErr('Credenciales incorrectas.'); return; }
+    if (u.activo === false) { showErr('Cuenta desactivada.'); return; }
     if (u.fecha_expiracion) {
       var exp = new Date(u.fecha_expiracion);
-      if (new Date() > exp) { showError('Tu membresia ha caducado.'); return; }
+      if (new Date() > exp) { showErr('Tu membresia ha caducado.'); return; }
     }
     usuario = u;
-    try { localStorage.setItem('netflix_session', JSON.stringify(u)); } catch(e) {}
+    try { localStorage.setItem('ns', JSON.stringify(u)); } catch(e) {}
     showScreen('home');
     loadHome();
   }, function(e) {
     btn.disabled = false;
     btn.textContent = 'Iniciar sesion';
-    showError(e.message || 'Error de conexion.');
+    showErr(e.message || 'Error de conexion.');
   });
 
-  function showError(msg) {
-    errBox.textContent = msg;
-    errBox.classList.add('show');
+  function showErr(msg) {
     btn.disabled = false;
     btn.textContent = 'Iniciar sesion';
+    errBox.textContent = msg;
+    errBox.className = 'error-box show';
   }
 }
 
-document.getElementById('btn-logout').addEventListener('click', function() {
-  localStorage.removeItem('netflix_session');
-  usuario = null;
-  peliculas = [];
-  series = [];
+document.getElementById('btn-logout').onclick = function() {
+  try { localStorage.removeItem('ns'); } catch(e) {}
+  usuario = null; peliculas = []; series = [];
   showScreen('login');
-});
+};
 
-document.getElementById('btn-hero-play').addEventListener('click', function() {
+document.getElementById('btn-hero-play').onclick = function() {
   if (!heroItem) return;
-  if (heroTipo === 'pelicula') {
-    openPlayer(heroItem.tmdb_id, 'movie', heroItem.titulo, 1, 1, heroItem.url_pixeldrain);
-  } else {
-    openDetail(heroItem, heroTipo);
-  }
-});
+  if (heroTipo === 'pelicula') openPlayer(heroItem.tmdb_id, 'movie', heroItem.titulo, 1, 1, heroItem.url_pixeldrain);
+  else openDetail(heroItem, heroTipo);
+};
+document.getElementById('btn-hero-info').onclick = function() { if (heroItem) openDetail(heroItem, heroTipo); };
+document.getElementById('btn-detail-back').onclick = goBack;
+document.getElementById('btn-player-back').onclick = closePlayer;
+document.getElementById('nav-all').onclick = function() { renderHome('all'); setNav(this); };
+document.getElementById('nav-movies').onclick = function() { renderHome('pelicula'); setNav(this); };
+document.getElementById('nav-series').onclick = function() { renderHome('serie'); setNav(this); };
+document.getElementById('search-input').oninput = function() { doSearch(this.value); };
 
-document.getElementById('btn-hero-info').addEventListener('click', function() {
-  if (heroItem) openDetail(heroItem, heroTipo);
-});
-
-document.getElementById('btn-detail-back').addEventListener('click', goBack);
-document.getElementById('btn-player-back').addEventListener('click', closePlayer);
-
-document.getElementById('nav-all').addEventListener('click', function() { renderHome('all'); setNavActive(this); });
-document.getElementById('nav-movies').addEventListener('click', function() { renderHome('pelicula'); setNavActive(this); });
-document.getElementById('nav-series').addEventListener('click', function() { renderHome('serie'); setNavActive(this); });
-
-document.getElementById('search-input').addEventListener('input', function() { doSearch(this.value); });
-
-function setNavActive(el) {
+function setNav(el) {
   var links = document.querySelectorAll('.nav-links a');
   for (var i = 0; i < links.length; i++) links[i].classList.remove('active');
   el.classList.add('active');
 }
 
-window.addEventListener('load', function() {
-  var saved = localStorage.getItem('netflix_session');
-  if (saved) {
-    try {
+// SESSION
+window.onload = function() {
+  try {
+    var saved = localStorage.getItem('ns');
+    if (saved) {
       var u = JSON.parse(saved);
-      if (u && u.fecha_expiracion) {
-        var exp = new Date(u.fecha_expiracion);
-        if (new Date() < exp) {
-          usuario = u;
-          setTimeout(function() { showScreen('home'); loadHome(); }, 1800);
-          return;
-        }
+      if (u && u.fecha_expiracion && new Date() < new Date(u.fecha_expiracion)) {
+        usuario = u;
+        setTimeout(function() { showScreen('home'); loadHome(); }, 1500);
+        return;
       }
-    } catch(e) {}
-    localStorage.removeItem('netflix_session');
-  }
-  setTimeout(function() { showScreen('login'); }, 1800);
-});
+    }
+  } catch(e) {}
+  setTimeout(function() { showScreen('login'); }, 1500);
+};
 
 function loadHome() {
-  document.getElementById('nav-username').textContent = (usuario && (usuario.nombre || usuario.correo)) || '';
+  var nameEl = document.getElementById('nav-username');
+  nameEl.textContent = (usuario && (usuario.nombre || usuario.correo)) || '';
   sbGet('peliculas', '?order=created_at.desc').then(function(data) {
     peliculas = data || [];
     sbGet('series', '?order=created_at.desc').then(function(data2) {
       series = data2 || [];
       renderHome('all');
-    }, function() {
-      series = [];
-      renderHome('all');
-    });
-  }, function() {
-    peliculas = [];
-    sbGet('series', '?order=created_at.desc').then(function(data2) {
-      series = data2 || [];
-      renderHome('all');
-    }, function() {
-      series = [];
-      renderHome('all');
-    });
-  });
+    }, function() { series = []; renderHome('all'); });
+  }, function() { peliculas = []; renderHome('all'); });
 }
 
 function renderHome(tipo) {
   var rows = document.getElementById('content-rows');
   var heroSection = document.getElementById('hero-section');
   rows.innerHTML = '';
-
   var pelis = tipo === 'serie' ? [] : peliculas;
   var sers = tipo === 'pelicula' ? [] : series;
-
-  var heroSource = pelis[0] ? { item: pelis[0], t: 'pelicula' } : sers[0] ? { item: sers[0], t: 'serie' } : null;
+  var heroSource = pelis[0] ? {item:pelis[0],t:'pelicula'} : sers[0] ? {item:sers[0],t:'serie'} : null;
   if (heroSource) {
     heroItem = heroSource.item;
     heroTipo = heroSource.t;
@@ -440,67 +436,57 @@ function renderHome(tipo) {
   } else {
     heroSection.style.display = 'none';
   }
-
   if (pelis.length) rows.appendChild(makeRow('Peliculas', pelis, 'pelicula'));
   if (sers.length) rows.appendChild(makeRow('Series', sers, 'serie'));
 }
 
 function makeRow(title, items, tipo) {
   var section = document.createElement('div');
-  section.style.cssText = 'margin-bottom:16px';
-  section.innerHTML = '<div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:8px;padding:0 8px">' + title + '</div>';
-  var scroll = document.createElement('div');
-  scroll.style.cssText = 'display:grid;grid-template-columns:repeat(8,1fr);gap:6px;padding:0 8px';
-  items.forEach(function(item) {
-    var card = document.createElement('div');
-    card.style.cssText = 'cursor:pointer;overflow:hidden;border-radius:4px';
-    var img = document.createElement('img');
-    img.src = item.url_imagen || '';
-    img.alt = item.titulo;
-    img.style.cssText = 'width:100%;height:110px;object-fit:cover;display:block;border-radius:4px';
-    img.onerror = function() { this.style.background = '#1a1a1a'; };
-    var label = document.createElement('div');
-    label.textContent = item.titulo;
-    label.style.cssText = 'font-size:11px;color:#808080;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
-    card.appendChild(img);
-    card.appendChild(label);
-    card.addEventListener('click', function() { openDetail(item, tipo); });
-    scroll.appendChild(card);
-  });
-  section.appendChild(scroll);
+  section.style.marginBottom = '24px';
+  var titleEl = document.createElement('div');
+  titleEl.textContent = title;
+  titleEl.style.cssText = 'font-size:18px;font-weight:700;color:#fff;margin-bottom:12px';
+  section.appendChild(titleEl);
+  var grid = document.createElement('div');
+  grid.className = 'cards-grid-tv';
+  for (var i = 0; i < items.length; i++) {
+    (function(item) {
+      var wrap = document.createElement('div');
+      wrap.className = 'card-tv';
+      var img = document.createElement('img');
+      img.src = item.url_imagen || '';
+      img.alt = item.titulo;
+      img.onerror = function() { this.style.background = '#1a1a1a'; this.src = ''; };
+      var lbl = document.createElement('div');
+      lbl.className = 'card-tv-title';
+      lbl.textContent = item.titulo;
+      wrap.appendChild(img);
+      wrap.appendChild(lbl);
+      wrap.onclick = function() { openDetail(item, tipo); };
+      grid.appendChild(wrap);
+    })(items[i]);
+  }
+  section.appendChild(grid);
   return section;
 }
 
 function doSearch(q) {
   var rows = document.getElementById('content-rows');
   var heroSection = document.getElementById('hero-section');
-  if (!q.trim()) { renderHome('all'); return; }
+  if (!q || !q.replace(/^\s+|\s+$/g,'')) { renderHome('all'); return; }
   var ql = q.toLowerCase();
   var filtered = [];
-  peliculas.forEach(function(p) { if (p.titulo.toLowerCase().indexOf(ql) >= 0) { var x = Object.assign({}, p); x._tipo = 'pelicula'; filtered.push(x); } });
-  series.forEach(function(s) { if (s.titulo.toLowerCase().indexOf(ql) >= 0) { var x = Object.assign({}, s); x._tipo = 'serie'; filtered.push(x); } });
+  for (var i = 0; i < peliculas.length; i++) { if (peliculas[i].titulo.toLowerCase().indexOf(ql) >= 0) { var x = {}; for (var k in peliculas[i]) x[k]=peliculas[i][k]; x._tipo='pelicula'; filtered.push(x); } }
+  for (var j = 0; j < series.length; j++) { if (series[j].titulo.toLowerCase().indexOf(ql) >= 0) { var y = {}; for (var m in series[j]) y[m]=series[j][m]; y._tipo='serie'; filtered.push(y); } }
   heroSection.style.display = 'none';
   rows.innerHTML = '';
-  if (!filtered.length) { rows.innerHTML = '<p style="color:var(--muted);padding:2rem 0">No se encontraron resultados</p>'; return; }
-  var section = document.createElement('div');
-  section.className = 'row-section';
-  section.innerHTML = '<div class="row-title">Resultados</div>';
-  var grid = document.createElement('div');
-  grid.className = 'cards-grid';
-  filtered.forEach(function(item) {
-    var card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = '<img class="card-img" src="' + (item.url_imagen || '') + '" alt="' + item.titulo + '" loading="lazy" onerror="this.style.background=\'#1a1a1a\'"><div class="card-title">' + item.titulo + '</div>';
-    card.addEventListener('click', function() { openDetail(item, item._tipo); });
-    grid.appendChild(card);
-  });
-  section.appendChild(grid);
-  rows.appendChild(section);
+  if (!filtered.length) { rows.innerHTML = '<p style="color:#808080;padding:32px 0">No se encontraron resultados</p>'; return; }
+  rows.appendChild(makeRow('Resultados', filtered, '_tipo'));
 }
 
 function openDetail(item, tipo) {
   historyStack.push('home');
-  document.getElementById('detail-bg').style.backgroundImage = 'url(' + (item.url_imagen || '') + ')';
+  document.getElementById('detail-bg').style.backgroundImage = 'url(' + (item.url_imagen||'') + ')';
   document.getElementById('detail-title').textContent = item.titulo;
   document.getElementById('detail-genre').textContent = item.genero || '';
   document.getElementById('detail-sinopsis').textContent = item.sinopsis || '';
@@ -510,25 +496,27 @@ function openDetail(item, tipo) {
     var btn = document.createElement('button');
     btn.className = 'btn-play';
     btn.textContent = 'Reproducir';
-    btn.addEventListener('click', function() { openPlayer(item.tmdb_id, 'movie', item.titulo, 1, 1, item.url_pixeldrain); });
+    btn.onclick = function() { openPlayer(item.tmdb_id,'movie',item.titulo,1,1,item.url_pixeldrain); };
     buttons.appendChild(btn);
   }
   var epSection = document.getElementById('episodes-section');
   epSection.innerHTML = '';
   if (tipo === 'serie') {
-    epSection.innerHTML = '<div class="episodes-title">Episodios</div><div id="ep-list"><div style="color:var(--muted)">Cargando...</div></div>';
-    sbGet('episodios', '?serie_id=eq.' + item.id + '&order=temporada.asc,episodio.asc').then(function(eps) {
+    epSection.innerHTML = '<div class="episodes-title">Episodios</div><div id="ep-list"><div style="color:#808080">Cargando...</div></div>';
+    sbGet('episodios','?serie_id=eq.'+item.id+'&order=temporada.asc,episodio.asc').then(function(eps) {
       var epList = document.getElementById('ep-list');
       epList.innerHTML = '';
-      if (!eps.length) { epList.innerHTML = '<p style="color:var(--muted)">No hay episodios</p>'; return; }
-      eps.forEach(function(ep) {
-        var div = document.createElement('div');
-        div.className = 'episode-item';
-        div.innerHTML = '<div class="episode-badge">T' + ep.temporada + 'E' + ep.episodio + '</div><div class="episode-info"><div class="episode-title">' + (ep.titulo || 'Episodio ' + ep.episodio) + '</div>' + (ep.sinopsis ? '<div class="episode-sinopsis">' + ep.sinopsis + '</div>' : '') + '</div><div class="episode-play">&#9654;</div>';
-        div.addEventListener('click', function() { openPlayer(item.tmdb_id, 'tv', ep.titulo || item.titulo, ep.temporada, ep.episodio, ep.url_pixeldrain); });
-        epList.appendChild(div);
-      });
-    });
+      if (!eps || !eps.length) { epList.innerHTML='<p style="color:#808080">No hay episodios</p>'; return; }
+      for (var i=0;i<eps.length;i++) {
+        (function(ep) {
+          var div = document.createElement('div');
+          div.className = 'episode-item';
+          div.innerHTML = '<div class="episode-badge">T'+ep.temporada+'E'+ep.episodio+'</div><div class="episode-info"><div class="episode-title">'+(ep.titulo||'Episodio '+ep.episodio)+'</div>'+(ep.sinopsis?'<div class="episode-sinopsis">'+ep.sinopsis+'</div>':'')+'</div><div class="episode-play">&#9654;</div>';
+          div.onclick = function() { openPlayer(item.tmdb_id,'tv',ep.titulo||item.titulo,ep.temporada,ep.episodio,ep.url_pixeldrain); };
+          epList.appendChild(div);
+        })(eps[i]);
+      }
+    }, function() {});
   }
   showScreen('detail');
 }
@@ -541,70 +529,43 @@ function openPlayer(tmdbId, tipo, titulo, temporada, episodio, archiveUrl) {
   document.getElementById('player-loading').style.display = 'flex';
   document.getElementById('player-content').style.display = 'none';
   document.getElementById('player-content').innerHTML = '';
-  var src, sourceLabel;
-  if (archiveUrl && archiveUrl.trim()) {
-    src = archiveUrl.trim();
-    sourceLabel = 'Servidor propio';
+  var src, label;
+  if (archiveUrl && archiveUrl.replace(/^\s+|\s+$/g,'')) {
+    src = archiveUrl.replace(/^\s+|\s+$/g,'');
+    label = 'Servidor propio';
   } else {
     src = tipo === 'tv'
-      ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + temporada + '/' + episodio
-      : 'https://vidsrc.to/embed/movie/' + tmdbId;
-    sourceLabel = 'VidSrc';
+      ? 'https://vidsrc.to/embed/tv/'+tmdbId+'/'+temporada+'/'+episodio
+      : 'https://vidsrc.to/embed/movie/'+tmdbId;
+    label = 'VidSrc';
   }
-  document.getElementById('player-source').textContent = sourceLabel;
-  var playerContent = document.getElementById('player-content');
+  document.getElementById('player-source').textContent = label;
+  var content = document.getElementById('player-content');
   var iframe = document.createElement('iframe');
   iframe.src = src;
-  iframe.setAttribute('allowfullscreen', 'true');
-  iframe.setAttribute('allowtransparency', 'true');
-  iframe.setAttribute('scrolling', 'no');
-  iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
-  iframe.setAttribute('referrerpolicy', 'origin');
-  iframe.style.position = 'absolute';
-  iframe.style.top = '0';
-  iframe.style.left = '0';
+  iframe.setAttribute('allowfullscreen','true');
+  iframe.setAttribute('allow','autoplay; fullscreen; encrypted-media');
   iframe.style.width = '100%';
   iframe.style.height = '100%';
   iframe.style.border = 'none';
-  iframe.style.zIndex = '1';
+  iframe.style.position = 'absolute';
+  iframe.style.top = '0';
+  iframe.style.left = '0';
   iframe.onload = function() {
     document.getElementById('player-loading').style.display = 'none';
-    playerContent.style.display = 'block';
+    content.style.display = 'block';
   };
-  playerContent.appendChild(iframe);
+  content.appendChild(iframe);
   playerTimer = setTimeout(function() {
     document.getElementById('player-loading').style.display = 'none';
-    playerContent.style.display = 'block';
+    content.style.display = 'block';
   }, 8000);
-  saveProgress(tmdbId, tipo, temporada, episodio);
 }
 
 function closePlayer() {
   if (playerTimer) { clearTimeout(playerTimer); playerTimer = null; }
   document.getElementById('player-content').innerHTML = '';
   goBack();
-}
-
-function saveProgress(tmdbId, tipo, temporada, episodio) {
-  if (!usuario || !usuario.id) return;
-  fetch(SUPABASE_URL + '/rest/v1/progreso', {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'resolution=merge-duplicates'
-    },
-    body: JSON.stringify({
-      usuario_id: usuario.id,
-      tmdb_id: tmdbId,
-      tipo: tipo,
-      temporada: temporada,
-      episodio: episodio,
-      progreso_segundos: 0,
-      actualizado_en: new Date().toISOString()
-    })
-  }).catch(function() {});
 }
 </script>
 </body>
