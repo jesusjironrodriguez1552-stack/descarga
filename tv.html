@@ -68,11 +68,11 @@ body { background: #0a0a0a; color: #ffffff; font-family: 'Inter', sans-serif; mi
 .content-rows { padding: 0 4% 4rem; }
 .row-section { margin-bottom: 3rem; }
 .row-title { font-size: clamp(1rem,2vw,1.3rem); font-weight: 700; margin-bottom: 1rem; }
-.cards-scroll { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+.cards-scroll { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; }
 .cards-scroll::-webkit-scrollbar { display: none; }
 .card { cursor: pointer; transition: transform 0.3s; position: relative; }
 .card:hover { transform: scale(1.08); z-index: 10; }
-.card-img { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; background: var(--card2); } 
+.card-img { width: 100%; height: 160px; object-fit: cover; border-radius: 4px; background: var(--card2); } 
 .card-title { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cards-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(clamp(120px,15vw,180px),1fr)); gap: 0.75rem; }
 #detail { background: var(--dark); }
@@ -541,25 +541,34 @@ function openPlayer(tmdbId, tipo, titulo, temporada, episodio, archiveUrl) {
     sourceLabel = 'Servidor propio';
   } else {
     src = tipo === 'tv'
-      ? 'https://player.videasy.net/tv/' + tmdbId + '/' + temporada + '/' + episodio + '?color=E50914&nextEpisode=true&autoplayNextEpisode=true'
-      : 'https://player.videasy.net/movie/' + tmdbId + '?color=E50914';
-    sourceLabel = 'Videasy';
+      ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + temporada + '/' + episodio
+      : 'https://vidsrc.to/embed/movie/' + tmdbId;
+    sourceLabel = 'VidSrc';
   }
   document.getElementById('player-source').textContent = sourceLabel;
-  var content = document.getElementById('player-content');
+  var playerContent = document.getElementById('player-content');
   var iframe = document.createElement('iframe');
   iframe.src = src;
-  iframe.allowFullscreen = true;
-  iframe.allow = 'autoplay; encrypted-media; fullscreen';
-  iframe.style.cssText = 'width:100%;height:100%;border:none;position:absolute;inset:0';
-  iframe.addEventListener('load', function() {
+  iframe.setAttribute('allowfullscreen', 'true');
+  iframe.setAttribute('allowtransparency', 'true');
+  iframe.setAttribute('scrolling', 'no');
+  iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
+  iframe.setAttribute('referrerpolicy', 'origin');
+  iframe.style.position = 'absolute';
+  iframe.style.top = '0';
+  iframe.style.left = '0';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+  iframe.style.zIndex = '1';
+  iframe.onload = function() {
     document.getElementById('player-loading').style.display = 'none';
-    content.style.display = 'block';
-  });
-  content.appendChild(iframe);
+    playerContent.style.display = 'block';
+  };
+  playerContent.appendChild(iframe);
   playerTimer = setTimeout(function() {
     document.getElementById('player-loading').style.display = 'none';
-    content.style.display = 'block';
+    playerContent.style.display = 'block';
   }, 8000);
   saveProgress(tmdbId, tipo, temporada, episodio);
 }
