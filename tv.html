@@ -789,8 +789,10 @@ async function doLogin() {
     if (!data || data.length === 0) throw new Error('Credenciales incorrectas.');
 
     const u = data[0];
-    const exp = new Date(u.fecha_expiracion);
-    if (new Date() > exp) throw new Error('Tu membresía ha caducado. Renueva tu plan.');
+    if (u.fecha_expiracion) {
+      const exp = new Date(u.fecha_expiracion);
+      if (new Date() > exp) throw new Error('Tu membresía ha caducado. Renueva tu plan.');
+    }
 
     usuario = u;
     localStorage.setItem('netflix_session', JSON.stringify(u));
