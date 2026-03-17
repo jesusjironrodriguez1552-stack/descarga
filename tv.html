@@ -240,8 +240,11 @@ function showScreen(id) {
   var screens = document.querySelectorAll('.screen');
   for (var i = 0; i < screens.length; i++) {
     screens[i].classList.remove('active');
+    screens[i].style.display = 'none';
   }
-  document.getElementById(id).classList.add('active');
+  var target = document.getElementById(id);
+  target.classList.add('active');
+  target.style.display = id === 'player' ? 'flex' : 'block';
 }
 
 function goBack() {
