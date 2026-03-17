@@ -225,17 +225,29 @@ var loginMode = 'email';
 
 function sbGet(table, query) {
   query = query || '';
-  return fetch(SUPABASE_URL + '/rest/v1/' + table + query, {
-    method: 'GET',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json'
-    }
-  }).then(function(r) {
-    if (!r.ok) throw new Error('Error ' + r.status);
-    return r.json();
+  var url = SUPABASE_URL + '/rest/v1/' + table + query;
+  var timeout = new Promise(function(_, reject) {
+    setTimeout(function() { reject(new Error('Timeout - sin respuesta del servidor')); }, 10000);
   });
+  var request = new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.setRequestHeader('apikey', SUPABASE_KEY);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_KEY);
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try { resolve(JSON.parse(xhr.responseText)); }
+        catch(e) { reject(new Error('Error parseando respuesta')); }
+      } else {
+        reject(new Error('Error ' + xhr.status + ': ' + xhr.responseText));
+      }
+    };
+    xhr.onerror = function() { reject(new Error('Error de red')); };
+    xhr.ontimeout = function() { reject(new Error('Timeout')); };
+    xhr.timeout = 10000;
+    xhr.send();
+  });
+  return Promise.race([request, timeout]);
 }
 
 function showScreen(id) {
