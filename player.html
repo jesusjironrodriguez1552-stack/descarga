@@ -8,59 +8,108 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
-#frame { width: 100%; height: 100%; border: none; display: block; }
+
+#frame {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+  z-index: 1;
+  opacity: 0.01;
+  display: block;
+}
+
 #loading {
-  position: fixed; inset: 0; background: #000;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 16px; z-index: 10;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 5;
 }
-.spinner { width: 48px; height: 48px; border: 4px solid rgba(229,9,20,0.3); border-top-color: #E50914; border-radius: 50%; animation: spin 0.8s linear infinite; }
+
+.spinner {
+  width: 52px; height: 52px;
+  border: 4px solid rgba(229,9,20,0.3);
+  border-top-color: #E50914;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
-#titulo { color: #fff; font-size: 18px; font-weight: bold; font-family: Arial; }
-#fuente { color: #808080; font-size: 13px; font-family: Arial; }
+
+#titulo { color: #fff; font-size: 20px; font-weight: bold; font-family: Arial; text-align: center; padding: 0 20px; }
+#fuente { color: #808080; font-size: 14px; font-family: Arial; }
+
 #back {
-  position: fixed; top: 16px; left: 16px; z-index: 20;
-  background: rgba(0,0,0,0.7); border: none; border-radius: 50%;
-  width: 44px; height: 44px; color: #fff; font-size: 20px;
-  cursor: pointer; font-family: Arial;
+  position: fixed; top: 20px; left: 20px; z-index: 20;
+  background: rgba(0,0,0,0.8); border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 50%; width: 48px; height: 48px;
+  color: #fff; font-size: 22px; cursor: pointer;
+  font-family: Arial; display: flex; align-items: center; justify-content: center;
 }
-#source-badge {
-  position: fixed; top: 16px; right: 16px; z-index: 20;
-  background: rgba(0,0,0,0.5); padding: 4px 12px;
-  border-radius: 12px; font-size: 12px; color: rgba(255,255,255,0.5);
+
+#badge {
+  position: fixed; top: 20px; right: 20px; z-index: 20;
+  background: rgba(0,0,0,0.6); padding: 6px 14px;
+  border-radius: 12px; font-size: 13px;
+  color: rgba(255,255,255,0.5); font-family: Arial;
+}
+
+#play-btn {
+  display: none;
+  padding: 16px 40px;
+  background: #E50914;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
   font-family: Arial;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 8px;
 }
 </style>
 </head>
 <body>
+
 <button id="back" onclick="history.back()">&#8592;</button>
-<div id="source-badge" id="source-badge"></div>
+<div id="badge"></div>
+
 <div id="loading">
-  <div class="spinner"></div>
+  <div class="spinner" id="spinner"></div>
   <div id="titulo">Cargando...</div>
   <div id="fuente">Preparando reproduccion...</div>
+  <button id="play-btn" onclick="showPlayer()">&#9654; Iniciar Video</button>
 </div>
-<iframe id="frame" allowfullscreen="true" webkitallowfullscreen="true"
-  allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+
+<iframe id="frame"
+  allowfullscreen="true"
+  webkitallowfullscreen="true"
+  mozallowfullscreen="true"
+  allow="autoplay; fullscreen; encrypted-media; picture-in-picture; screen-wake-lock"
   referrerpolicy="origin"
-  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation allow-autoplay">
+  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation allow-autoplay allow-modals">
 </iframe>
 
 <script>
+// Parsear parametros
 var params = {};
 var parts = window.location.search.substring(1).split('&');
 for (var i = 0; i < parts.length; i++) {
   var kv = parts[i].split('=');
-  if (kv.length === 2) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1]);
+  if (kv.length >= 2) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv.slice(1).join('='));
 }
 
-var tmdbId   = params.tmdb || '';
-var tipo     = params.tipo || 'movie';
-var temporada = params.s || '1';
-var episodio  = params.e || '1';
-var titulo   = params.titulo || 'Reproduciendo...';
-var archiveUrl = params.url || '';
+var tmdbId    = params.tmdb    || '';
+var tipo      = params.tipo    || 'movie';
+var temporada = params.s       || '1';
+var episodio  = params.e       || '1';
+var titulo    = params.titulo  || 'Reproduciendo...';
+var archiveUrl = params.url    || '';
 
 document.getElementById('titulo').textContent = titulo;
 document.title = titulo;
@@ -88,41 +137,69 @@ var current = 0;
 var timer = null;
 var frame = document.getElementById('frame');
 var loading = document.getElementById('loading');
-var badge = document.getElementById('source-badge');
+var badge = document.getElementById('badge');
+var playBtn = document.getElementById('play-btn');
+var spinner = document.getElementById('spinner');
+
+function showPlayer() {
+  loading.style.display = 'none';
+  frame.style.opacity = '1';
+  frame.style.zIndex = '1';
+}
 
 function load(index) {
   if (index >= providers.length) {
-    loading.style.display = 'flex';
+    spinner.style.display = 'none';
     document.getElementById('titulo').textContent = 'No se pudo cargar el video';
-    document.getElementById('fuente').innerHTML = '<button onclick="history.back()" style="background:#E50914;color:#fff;border:none;padding:10px 20px;font-size:14px;border-radius:4px;cursor:pointer;margin-top:8px">Volver</button>';
+    document.getElementById('fuente').textContent = 'Todos los servidores fallaron';
+    playBtn.style.display = 'none';
     return;
   }
+
+  if (timer) { clearTimeout(timer); timer = null; }
+
   var p = providers[index];
   badge.textContent = p.label;
-  document.getElementById('fuente').textContent = 'Cargando ' + p.label + '...';
-  loading.style.display = 'flex';
-  frame.style.display = 'none';
+  document.getElementById('fuente').textContent = 'Conectando con ' + p.label + '...';
+  playBtn.style.display = 'none';
+  spinner.style.display = 'block';
 
-  if (timer) clearTimeout(timer);
-
-  frame.onload = function() {
-    loading.style.display = 'none';
-    frame.style.display = 'block';
-  };
-
+  // Mantener iframe visible pero casi transparente — TV no detiene la carga
+  frame.style.opacity = '0.01';
   frame.src = p.url;
 
+  frame.onload = function() {
+    // Esperar 3 segundos extra para que la TV decodifique el primer frame
+    setTimeout(function() {
+      showPlayer();
+    }, 3000);
+  };
+
+  // Mostrar boton manual a los 8 segundos por si onload no dispara
   timer = setTimeout(function() {
-    loading.style.display = 'none';
-    frame.style.display = 'block';
-  }, 10000);
+    document.getElementById('fuente').textContent = 'Listo — presiona para ver';
+    spinner.style.display = 'none';
+    playBtn.style.display = 'block';
+  }, 8000);
+
+  // Timeout total de 20 segundos — pasar al siguiente proveedor
+  setTimeout(function() {
+    if (loading.style.display !== 'none') {
+      current++;
+      load(current);
+    }
+  }, 20000);
 }
 
-load(0);
+// Esperar 500ms antes de cargar — dar tiempo a la TV para liberar memoria del catalogo
+setTimeout(function() {
+  load(0);
+}, 500);
 
-// Botones para cambiar proveedor manualmente
+// Tecla derecha = siguiente proveedor
 document.addEventListener('keydown', function(e) {
-  if (e.keyCode === 39) { current++; load(current); } // flecha derecha = siguiente
+  if (e.keyCode === 39) { current++; load(current); }
+  if (e.keyCode === 13) { showPlayer(); } // OK/Enter = mostrar video
 });
 </script>
 </body>
