@@ -523,6 +523,16 @@ function openDetail(item, tipo) {
 }
 
 function openPlayer(tmdbId, tipo, titulo, temporada, episodio, archiveUrl) {
+  var params = 'tmdb=' + encodeURIComponent(tmdbId || '')
+    + '&tipo=' + encodeURIComponent(tipo || 'movie')
+    + '&s=' + encodeURIComponent(temporada || 1)
+    + '&e=' + encodeURIComponent(episodio || 1)
+    + '&titulo=' + encodeURIComponent(titulo || '');
+  if (archiveUrl && archiveUrl.replace(/^\s+|\s+$/g,'')) {
+    params += '&url=' + encodeURIComponent(archiveUrl.replace(/^\s+|\s+$/g,''));
+  }
+  window.location.href = 'player.html?' + params;
+  return;
   var activeEl = document.querySelector('.screen.active');
   historyStack.push(activeEl ? activeEl.id : 'home');
   showScreen('player');
@@ -535,15 +545,19 @@ function openPlayer(tmdbId, tipo, titulo, temporada, episodio, archiveUrl) {
     providers = [{ url: archiveUrl.replace(/^\s+|\s+$/g,''), label: 'Servidor propio' }];
   } else if (tipo === 'tv') {
     providers = [
+      { url: 'https://embed.su/embed/tv/'+tmdbId+'/'+temporada+'/'+episodio, label: 'EmbedSU' },
+      { url: 'https://multiembed.mov/directstream.php?video_id='+tmdbId+'&tmdb=1&s='+temporada+'&e='+episodio, label: 'MultiEmbed' },
+      { url: 'https://player.videasy.net/tv/'+tmdbId+'/'+temporada+'/'+episodio+'?color=E50914', label: 'Videasy' },
       { url: 'https://vidsrc.me/embed/tv?tmdb='+tmdbId+'&season='+temporada+'&episode='+episodio, label: 'VidSrc ME' },
-      { url: 'https://vidsrc.xyz/embed/tv?tmdb='+tmdbId+'&season='+temporada+'&episode='+episodio, label: 'VidSrc XYZ' },
-      { url: 'https://vidsrc.to/embed/tv/'+tmdbId+'/'+temporada+'/'+episodio, label: 'VidSrc TO' }
+      { url: 'https://vidsrc.xyz/embed/tv?tmdb='+tmdbId+'&season='+temporada+'&episode='+episodio, label: 'VidSrc XYZ' }
     ];
   } else {
     providers = [
+      { url: 'https://embed.su/embed/movie/'+tmdbId, label: 'EmbedSU' },
+      { url: 'https://multiembed.mov/directstream.php?video_id='+tmdbId+'&tmdb=1', label: 'MultiEmbed' },
+      { url: 'https://player.videasy.net/movie/'+tmdbId+'?color=E50914', label: 'Videasy' },
       { url: 'https://vidsrc.me/embed/movie?tmdb='+tmdbId, label: 'VidSrc ME' },
-      { url: 'https://vidsrc.xyz/embed/movie?tmdb='+tmdbId, label: 'VidSrc XYZ' },
-      { url: 'https://vidsrc.to/embed/movie/'+tmdbId, label: 'VidSrc TO' }
+      { url: 'https://vidsrc.xyz/embed/movie?tmdb='+tmdbId, label: 'VidSrc XYZ' }
     ];
   }
 
@@ -554,11 +568,22 @@ function openPlayer(tmdbId, tipo, titulo, temporada, episodio, archiveUrl) {
     if (index >= providers.length) {
       document.getElementById('player-loading').style.display = 'none';
       playerContent.style.display = 'block';
-      playerContent.innerHTML = '<div style="color:#fff;text-align:center;padding:40px;font-size:18px">No se pudo cargar el reproductor.<br><br><button onclick="closePlayer()" style="background:#E50914;color:#fff;border:none;padding:12px 24px;font-size:16px;border-radius:4px;cursor:pointer">Volver</button></div>';
+      playerContent.innerHTML = '<div style="color:#fff;text-align:center;padding:60px 40px;font-size:16px;line-height:1.8">No se pudo cargar el video.<br>Verifica tu conexion a internet.<br><br><button onclick="closePlayer()" style="background:#E50914;color:#fff;border:none;padding:12px 28px;font-size:15px;border-radius:4px;cursor:pointer;font-family:Arial">Volver al catalogo</button></div>';
       return;
     }
+    // Abrir en nueva ventana/tab — igual que Flutter WebView
+    window.open(providers[index].url, '_blank');
+    document.getElementById('player-loading').style.display = 'none';
+    closePlayer();
+    return;
+
+    if (playerTimer) { clearTimeout(playerTimer); playerTimer = null; }
+
     var p = providers[index];
-    document.getElementById('player-source').textContent = p.label;
+    document.getElementById('player-source').textContent = p.label + ' (' + (index+1) + '/' + providers.length + ')';
+    document.getElementById('player-loading-title').textContent = 'Cargando ' + p.label + '...';
+    document.getElementById('player-loading').style.display = 'flex';
+    playerContent.style.display = 'none';
     playerContent.innerHTML = '';
 
     var iframe = document.createElement('iframe');
@@ -568,7 +593,7 @@ function openPlayer(tmdbId, tipo, titulo, temporada, episodio, archiveUrl) {
     iframe.setAttribute('mozallowfullscreen', 'true');
     iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture; screen-wake-lock');
     iframe.setAttribute('referrerpolicy', 'origin');
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation allow-autoplay');
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.border = 'none';
@@ -577,24 +602,44 @@ function openPlayer(tmdbId, tipo, titulo, temporada, episodio, archiveUrl) {
     iframe.style.left = '0';
     iframe.style.zIndex = '1';
 
-    var loaded = false;
+    var success = false;
+
     iframe.onload = function() {
-      if (loaded) return;
-      loaded = true;
-      document.getElementById('player-loading').style.display = 'none';
-      playerContent.style.display = 'block';
+      if (success) return;
+      // Wait 3s after load to verify content actually rendered
+      setTimeout(function() {
+        if (success) return;
+        try {
+          // Try to detect empty/error iframe
+          var doc = iframe.contentDocument || iframe.contentWindow.document;
+          var body = doc && doc.body;
+          if (!body || body.innerHTML.length < 100) {
+            // Likely blocked - try next
+            loadProvider(index + 1);
+            return;
+          }
+        } catch(e) {
+          // Cross-origin - assume it loaded OK
+        }
+        success = true;
+        document.getElementById('player-loading').style.display = 'none';
+        playerContent.style.display = 'block';
+      }, 3000);
+    };
+
+    iframe.onerror = function() {
+      if (success) return;
+      loadProvider(index + 1);
     };
 
     playerContent.appendChild(iframe);
 
-    // Fallback timeout - if no load event, show anyway
+    // Auto-advance to next provider after 15s if nothing loads
     playerTimer = setTimeout(function() {
-      if (!loaded) {
-        loaded = true;
-        document.getElementById('player-loading').style.display = 'none';
-        playerContent.style.display = 'block';
+      if (!success) {
+        loadProvider(index + 1);
       }
-    }, 10000);
+    }, 15000);
   }
 
   loadProvider(0);
