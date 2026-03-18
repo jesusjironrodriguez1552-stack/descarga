@@ -7,96 +7,34 @@
 <title>Reproductor</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
-
-#frame {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  border: none;
-  z-index: 1;
-  opacity: 0.01;
-  display: block;
-}
-
+html, body { width: 100%; height: 100%; background: #000; font-family: Arial; color: #fff; }
 #loading {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: #000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  z-index: 5;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100vh; gap: 20px; text-align: center; padding: 20px;
 }
-
-.spinner {
-  width: 52px; height: 52px;
-  border: 4px solid rgba(229,9,20,0.3);
-  border-top-color: #E50914;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
+.spinner { width: 52px; height: 52px; border: 4px solid rgba(229,9,20,0.3); border-top-color: #E50914; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-#titulo { color: #fff; font-size: 20px; font-weight: bold; font-family: Arial; text-align: center; padding: 0 20px; }
-#fuente { color: #808080; font-size: 14px; font-family: Arial; }
-
-#back {
-  position: fixed; top: 20px; left: 20px; z-index: 20;
-  background: rgba(0,0,0,0.8); border: 2px solid rgba(255,255,255,0.2);
-  border-radius: 50%; width: 48px; height: 48px;
-  color: #fff; font-size: 22px; cursor: pointer;
-  font-family: Arial; display: flex; align-items: center; justify-content: center;
-}
-
-#badge {
-  position: fixed; top: 20px; right: 20px; z-index: 20;
-  background: rgba(0,0,0,0.6); padding: 6px 14px;
-  border-radius: 12px; font-size: 13px;
-  color: rgba(255,255,255,0.5); font-family: Arial;
-}
-
-#play-btn {
-  display: none;
-  padding: 16px 40px;
-  background: #E50914;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 18px;
-  font-family: Arial;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 8px;
-}
+#titulo { font-size: 20px; font-weight: bold; }
+#fuente { font-size: 14px; color: #808080; }
+.btn { padding: 14px 32px; background: #E50914; color: #fff; border: none; border-radius: 4px; font-size: 16px; font-family: Arial; font-weight: bold; cursor: pointer; margin: 4px; }
+.btn-gray { background: #333; }
+#btns { display: none; flex-direction: column; gap: 10px; align-items: center; }
 </style>
 </head>
 <body>
-
-<button id="back" onclick="history.back()">&#8592;</button>
-<div id="badge"></div>
-
 <div id="loading">
   <div class="spinner" id="spinner"></div>
   <div id="titulo">Cargando...</div>
-  <div id="fuente">Preparando reproduccion...</div>
-  <button id="play-btn" onclick="showPlayer()">&#9654; Iniciar Video</button>
+  <div id="fuente">Redirigiendo al video...</div>
+  <div id="btns">
+    <button class="btn" id="btn-open">&#9654; Abrir Video</button>
+    <button class="btn btn-gray" id="btn-next">Probar otro servidor</button>
+    <button class="btn btn-gray" onclick="history.back()">&#8592; Volver</button>
+  </div>
 </div>
 
-<iframe id="frame"
-  allowfullscreen="true"
-  webkitallowfullscreen="true"
-  mozallowfullscreen="true"
-  allow="autoplay; fullscreen; encrypted-media; picture-in-picture; screen-wake-lock"
-  referrerpolicy="origin"
-  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation allow-autoplay allow-modals">
-</iframe>
-
 <script>
-// Parsear parametros
 var params = {};
 var parts = window.location.search.substring(1).split('&');
 for (var i = 0; i < parts.length; i++) {
@@ -104,12 +42,12 @@ for (var i = 0; i < parts.length; i++) {
   if (kv.length >= 2) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv.slice(1).join('='));
 }
 
-var tmdbId    = params.tmdb    || '';
-var tipo      = params.tipo    || 'movie';
-var temporada = params.s       || '1';
-var episodio  = params.e       || '1';
-var titulo    = params.titulo  || 'Reproduciendo...';
-var archiveUrl = params.url    || '';
+var tmdbId    = params.tmdb   || '';
+var tipo      = params.tipo   || 'movie';
+var temporada = params.s      || '1';
+var episodio  = params.e      || '1';
+var titulo    = params.titulo || 'Reproduciendo...';
+var archiveUrl = params.url   || '';
 
 document.getElementById('titulo').textContent = titulo;
 document.title = titulo;
@@ -134,73 +72,36 @@ if (archiveUrl) {
 }
 
 var current = 0;
-var timer = null;
-var frame = document.getElementById('frame');
-var loading = document.getElementById('loading');
-var badge = document.getElementById('badge');
-var playBtn = document.getElementById('play-btn');
-var spinner = document.getElementById('spinner');
 
-function showPlayer() {
-  loading.style.display = 'none';
-  frame.style.opacity = '1';
-  frame.style.zIndex = '1';
-}
-
-function load(index) {
-  if (index >= providers.length) {
-    spinner.style.display = 'none';
-    document.getElementById('titulo').textContent = 'No se pudo cargar el video';
-    document.getElementById('fuente').textContent = 'Todos los servidores fallaron';
-    playBtn.style.display = 'none';
-    return;
-  }
-
-  if (timer) { clearTimeout(timer); timer = null; }
-
+function loadProvider(index) {
+  if (index >= providers.length) { index = 0; }
+  current = index;
   var p = providers[index];
-  badge.textContent = p.label;
-  document.getElementById('fuente').textContent = 'Conectando con ' + p.label + '...';
-  playBtn.style.display = 'none';
-  spinner.style.display = 'block';
+  document.getElementById('fuente').textContent = p.label;
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('btns').style.display = 'none';
 
-  // Mantener iframe visible pero casi transparente — TV no detiene la carga
-  frame.style.opacity = '0.01';
-  frame.src = p.url;
-
-  frame.onload = function() {
-    // Esperar 3 segundos extra para que la TV decodifique el primer frame
-    setTimeout(function() {
-      showPlayer();
-    }, 3000);
-  };
-
-  // Mostrar boton manual a los 8 segundos por si onload no dispara
-  timer = setTimeout(function() {
-    document.getElementById('fuente').textContent = 'Listo — presiona para ver';
-    spinner.style.display = 'none';
-    playBtn.style.display = 'block';
-  }, 8000);
-
-  // Timeout total de 20 segundos — pasar al siguiente proveedor
+  // Redirigir directamente — sin iframe
   setTimeout(function() {
-    if (loading.style.display !== 'none') {
-      current++;
-      load(current);
-    }
-  }, 20000);
+    window.location.href = p.url;
+  }, 800);
 }
 
-// Esperar 500ms antes de cargar — dar tiempo a la TV para liberar memoria del catalogo
-setTimeout(function() {
-  load(0);
-}, 500);
+document.getElementById('btn-next').onclick = function() {
+  loadProvider(current + 1);
+};
 
-// Tecla derecha = siguiente proveedor
+document.getElementById('btn-open').onclick = function() {
+  window.location.href = providers[current].url;
+};
+
 document.addEventListener('keydown', function(e) {
-  if (e.keyCode === 39) { current++; load(current); }
-  if (e.keyCode === 13) { showPlayer(); } // OK/Enter = mostrar video
+  if (e.keyCode === 39) { loadProvider(current + 1); }
+  if (e.keyCode === 8 || e.keyCode === 27) { history.back(); }
 });
+
+// Iniciar
+loadProvider(0);
 </script>
 </body>
 </html>
